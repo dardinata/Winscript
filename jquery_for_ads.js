@@ -1,10 +1,30 @@
-		$(document).ready(function() {
-		var table = $('#example').DataTable( {					
-				
-					"ajax": {
-							 "url":  "https://sscn.bkn.go.id/public/data_noexist/pendaftar_dashboard_prod.js"
-						 },  
-					 "deferRender": true,           		
+		fetch_data = function(){
+			console.log('fetch_data');	
+			
+			var dt = $('#example').DataTable( {
+		        "processing": true,
+		        "serverSide": true,
+		        "ajax": {
+		        		url : "https://sscn.bkn.go.id/lowongan/spf",
+		        		type : "POST",
+		        		data : {
+		        				jenisFormasi : $('#jenisFormasi').val(),
+		        				pendidikanFormasi : $('#pendidikanFormasi').val(),
+		        				instansiFormasi : $('#instansiFormasi').val(),
+		        				jabatanFormasi : $('#jabatanFormasi').val(),
+		        				lokasiFormasi : $('#lokasiFormasi').val()
+		        			},
+		        		dataFilter: function(data){
+			                    var json = jQuery.parseJSON( data );
+			                    console.log(json);
+			                    json.recordsTotal = json.recordsTotal;
+			                    json.recordsFiltered = json.recordsFiltered;
+			                    json.data = json.data;
+			          
+			                    return JSON.stringify( json ); // return JSON string
+			                }	
+		    			},
+		    	"deferRender": true,           		
 					"columns": [
 						{ "data": "ROWNUM" },
 						{ "data": "PENDIDIKAN_NM" },
@@ -23,38 +43,23 @@
 						"render": function ( data, type, row, meta ) {
 						  return data == '' ? '' : '<a href="'+data+'" target="_blank">Download</a>';
 						}
-					  } ],
+					  } ],		
+	    	});   	
+	    	$('.dataTables_filter').addClass('hide-search');
+		};
 
-			   	dom: 'lr<"table-filter-container">tip',
-					initComplete: function(settings){
-					var api = new $.fn.dataTable.Api( settings );
-					  $('.table-filter-container', api.table().container()).append(
-						 $('#table-filter').detach().show()
-					  );
-					  
-					  $('#table-filter select').on('change', function(){
-						 table.search(this.value).draw();   
-					  });       
-				   },
-   	
-    
-	});
-       
-  
- 
+		fetch_data();
+		
 
-	var dtable = $('#example').DataTable();
-				$('.dataTables_filter').addClass('hide-search');
-				$('.filter').on('keyup change', function() {
-				  //clear global search values
-				  dtable.search('');
-				  dtable.column($(this).data('columnIndex')).search(this.value).draw();
-				});
+		$('#btnSearch').click(function(){
+			$('#example').DataTable().destroy();
+			fetch_data();	
+		}) 
 
-				$(".dataTables_filter input").on('keyup change', function() {
-				  //clear column search values
-				  dtable.columns().search('');
-				  //clear input values
-				  $('.filter').val('');
-				}); 
-		} );
+		$("input[type='text']").bind('keypress', function(e) {
+		    if(e.keyCode==13){
+		    	$('#example').DataTable().destroy();
+		        fetch_data();
+		    }
+		}); 
+    });
