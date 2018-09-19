@@ -1,4 +1,5 @@
-		fetch_data = function(){
+		$(document).ready(function(){
+fetch_data = function(){
 			console.log('fetch_data');	
 			
 			var dt = $('#example').DataTable( {
