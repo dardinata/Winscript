@@ -7,7 +7,7 @@ fetch_data = function(){
 		        "serverSide": true,
 		        "ajax": {
 		        		url : "https://sscn.bkn.go.id/lowongan/spf",
-		        		type : "POST",
+		        		type : "GET",
 		        		data : {
 		        				jenisFormasi : $('#jenisFormasi').val(),
 		        				pendidikanFormasi : $('#pendidikanFormasi').val(),
